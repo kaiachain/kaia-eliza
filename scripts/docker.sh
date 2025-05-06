@@ -53,17 +53,17 @@ case "$1" in
         CMD="docker run --platform linux/amd64 -p 3000:3000 -d"
 
         # Add base mounts
-        for mount in "${BASE_MOUNTS[@]}"; do
-            CMD="$CMD -v \"$(pwd)/$mount\""
-        done
+        # for mount in "${BASE_MOUNTS[@]}"; do
+        #     CMD="$CMD -v \"$(pwd)/$mount\""
+        # done
 
         # Add package mounts
-        for package in "${PACKAGES[@]}"; do
-            CMD="$CMD -v \"$(pwd)/packages/$package/src:/app/packages/$package/src\""
-        done
+        # for package in "${PACKAGES[@]}"; do
+        #     CMD="$CMD -v \"$(pwd)/packages/$package/src:/app/packages/$package/src\""
+        # done
 
         # Add core types mount separately (special case)
-        CMD="$CMD -v \"$(pwd)/packages/core/types:/app/packages/core/types\""
+        # CMD="$CMD -v \"$(pwd)/packages/core/types:/app/packages/core/types\""
 
         # Add container name and image
         CMD="$CMD --name eliza eliza"
