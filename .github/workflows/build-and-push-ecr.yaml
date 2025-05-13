@@ -1,7 +1,7 @@
 name: kaia-eliza PROD CI pipeline
 on:
   push:
-    branches: ['main','feat/add-CICD']
+    branches: ['main']
   
 
 jobs:
