@@ -1,6 +1,6 @@
 {
     "name": "Emily",
-    "plugins": [],
+    "plugins": ["@elizaos-plugins/adapter-postgres"],
     "clients": [],
     "modelProvider": "google",
     "settings": {
