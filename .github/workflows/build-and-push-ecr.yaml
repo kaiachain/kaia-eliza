@@ -36,5 +36,6 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_PROD }}
           IMAGE_TAG: ${{ steps.vars.outputs.hash }}
         run: |
+          cp -r ./kaia/changes/Dockerfile ./ 
           docker build  --build-arg VERSION=$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY -a
