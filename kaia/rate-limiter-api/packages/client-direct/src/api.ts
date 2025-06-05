@@ -57,7 +57,15 @@ export function createApiRouter(
 ):Router {
     const router = express.Router();
 
-    router.use(cors());
+    router.use(cors({
+        origin: [
+            'https://kaia-mainsite-rc-1-1.webflow.io',
+            'https://www.kaia.io',
+            'https://docs.kaia.io'
+        ],
+        methods: ['GET', 'POST'],
+        credentials: true
+    }));
     router.use(bodyParser.json());
     router.use(bodyParser.urlencoded({ extended: true }));
     router.use(
@@ -80,144 +88,144 @@ export function createApiRouter(
         });
     });
 
-    router.get("/agents", (req, res) => {
-        const agentsList = Array.from(agents.values()).map((agent) => ({
-            id: agent.agentId,
-            name: agent.character.name,
-            clients: Object.keys(agent.clients),
-        }));
-        res.json({ agents: agentsList });
-    });
+    // router.get("/agents", (req, res) => {
+    //     const agentsList = Array.from(agents.values()).map((agent) => ({
+    //         id: agent.agentId,
+    //         name: agent.character.name,
+    //         clients: Object.keys(agent.clients),
+    //     }));
+    //     res.json({ agents: agentsList });
+    // });
 
-    router.get('/storage', async (req, res) => {
-        try {
-            const uploadDir = path.join(process.cwd(), "data", "characters");
-            const files = await fs.promises.readdir(uploadDir);
-            res.json({ files });
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    });
+    // router.get('/storage', async (req, res) => {
+    //     try {
+    //         const uploadDir = path.join(process.cwd(), "data", "characters");
+    //         const files = await fs.promises.readdir(uploadDir);
+    //         res.json({ files });
+    //     } catch (error) {
+    //         res.status(500).json({ error: error.message });
+    //     }
+    // });
 
-    router.get("/agents/:agentId", (req, res) => {
-        const { agentId } = validateUUIDParams(req.params, res) ?? {
-            agentId: null,
-        };
-        if (!agentId) return;
+    // router.get("/agents/:agentId", (req, res) => {
+    //     const { agentId } = validateUUIDParams(req.params, res) ?? {
+    //         agentId: null,
+    //     };
+    //     if (!agentId) return;
 
-        const agent = agents.get(agentId);
+    //     const agent = agents.get(agentId);
 
-        if (!agent) {
-            res.status(404).json({ error: "Agent not found" });
-            return;
-        }
+    //     if (!agent) {
+    //         res.status(404).json({ error: "Agent not found" });
+    //         return;
+    //     }
 
-        const character = agent?.character;
-        if (character?.settings?.secrets) {
-            delete character.settings.secrets;
-        }
+    //     const character = agent?.character;
+    //     if (character?.settings?.secrets) {
+    //         delete character.settings.secrets;
+    //     }
 
-        res.json({
-            id: agent.agentId,
-            character: agent.character,
-        });
-    });
+    //     res.json({
+    //         id: agent.agentId,
+    //         character: agent.character,
+    //     });
+    // });
 
-    router.delete("/agents/:agentId", async (req, res) => {
-        const { agentId } = validateUUIDParams(req.params, res) ?? {
-            agentId: null,
-        };
-        if (!agentId) return;
+    // router.delete("/agents/:agentId", async (req, res) => {
+    //     const { agentId } = validateUUIDParams(req.params, res) ?? {
+    //         agentId: null,
+    //     };
+    //     if (!agentId) return;
 
-        const agent: AgentRuntime = agents.get(agentId);
+    //     const agent: AgentRuntime = agents.get(agentId);
 
-        if (agent) {
-            agent.stop();
-            directClient.unregisterAgent(agent);
-            res.status(204).json({ success: true });
-        } else {
-            res.status(404).json({ error: "Agent not found" });
-        }
-    });
+    //     if (agent) {
+    //         agent.stop();
+    //         directClient.unregisterAgent(agent);
+    //         res.status(204).json({ success: true });
+    //     } else {
+    //         res.status(404).json({ error: "Agent not found" });
+    //     }
+    // });
 
-    router.post("/agents/:agentId/set", async (req, res) => {
-        const { agentId } = validateUUIDParams(req.params, res) ?? {
-            agentId: null,
-        };
-        if (!agentId) return;
+    // router.post("/agents/:agentId/set", async (req, res) => {
+    //     const { agentId } = validateUUIDParams(req.params, res) ?? {
+    //         agentId: null,
+    //     };
+    //     if (!agentId) return;
 
-        let agent: AgentRuntime = agents.get(agentId);
+    //     let agent: AgentRuntime = agents.get(agentId);
 
-        // update character
-        if (agent) {
-            // stop agent
-            agent.stop();
-            directClient.unregisterAgent(agent);
-            // if it has a different name, the agentId will change
-        }
+    //     // update character
+    //     if (agent) {
+    //         // stop agent
+    //         agent.stop();
+    //         directClient.unregisterAgent(agent);
+    //         // if it has a different name, the agentId will change
+    //     }
 
-        // stores the json data before it is modified with added data
-        const characterJson = { ...req.body };
+    //     // stores the json data before it is modified with added data
+    //     const characterJson = { ...req.body };
 
-        // load character from body
-        const character = req.body;
-        try {
-            validateCharacterConfig(character);
-        } catch (e) {
-            elizaLogger.error(`Error parsing character: ${e}`);
-            res.status(400).json({
-                success: false,
-                message: e.message,
-            });
-            return;
-        }
+    //     // load character from body
+    //     const character = req.body;
+    //     try {
+    //         validateCharacterConfig(character);
+    //     } catch (e) {
+    //         elizaLogger.error(`Error parsing character: ${e}`);
+    //         res.status(400).json({
+    //             success: false,
+    //             message: e.message,
+    //         });
+    //         return;
+    //     }
 
-        // start it up (and register it)
-        try {
-            agent = await directClient.startAgent(character);
-            elizaLogger.log(`${character.name} started`);
-        } catch (e) {
-            elizaLogger.error(`Error starting agent: ${e}`);
-            res.status(500).json({
-                success: false,
-                message: e.message,
-            });
-            return;
-        }
+    //     // start it up (and register it)
+    //     try {
+    //         agent = await directClient.startAgent(character);
+    //         elizaLogger.log(`${character.name} started`);
+    //     } catch (e) {
+    //         elizaLogger.error(`Error starting agent: ${e}`);
+    //         res.status(500).json({
+    //             success: false,
+    //             message: e.message,
+    //         });
+    //         return;
+    //     }
 
-        if (process.env.USE_CHARACTER_STORAGE === "true") {
-            try {
-                const filename = `${agent.agentId}.json`;
-                const uploadDir = path.join(
-                    process.cwd(),
-                    "data",
-                    "characters"
-                );
-                const filepath = path.join(uploadDir, filename);
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.writeFile(
-                    filepath,
-                    JSON.stringify(
-                        { ...characterJson, id: agent.agentId },
-                        null,
-                        2
-                    )
-                );
-                elizaLogger.info(
-                    `Character stored successfully at ${filepath}`
-                );
-            } catch (error) {
-                elizaLogger.error(
-                    `Failed to store character: ${error.message}`
-                );
-            }
-        }
+    //     if (process.env.USE_CHARACTER_STORAGE === "true") {
+    //         try {
+    //             const filename = `${agent.agentId}.json`;
+    //             const uploadDir = path.join(
+    //                 process.cwd(),
+    //                 "data",
+    //                 "characters"
+    //             );
+    //             const filepath = path.join(uploadDir, filename);
+    //             await fs.promises.mkdir(uploadDir, { recursive: true });
+    //             await fs.promises.writeFile(
+    //                 filepath,
+    //                 JSON.stringify(
+    //                     { ...characterJson, id: agent.agentId },
+    //                     null,
+    //                     2
+    //                 )
+    //             );
+    //             elizaLogger.info(
+    //                 `Character stored successfully at ${filepath}`
+    //             );
+    //         } catch (error) {
+    //             elizaLogger.error(
+    //                 `Failed to store character: ${error.message}`
+    //             );
+    //         }
+    //     }
 
-        res.json({
-            id: character.id,
-            character: character,
-        });
-    });
+    //     res.json({
+    //         id: character.id,
+    //         character: character,
+    //     });
+    // });
 
     // router.get("/agents/:agentId/channels", async (req, res) => {
     //     const { agentId } = validateUUIDParams(req.params, res) ?? {
@@ -249,70 +257,70 @@ export function createApiRouter(
     //     }
     // });
 
-    router.get("/agents/:agentId/:roomId/memories", async (req, res) => {
-        const { agentId, roomId } = validateUUIDParams(req.params, res) ?? {
-            agentId: null,
-            roomId: null,
-        };
-        if (!agentId || !roomId) return;
+    // router.get("/agents/:agentId/:roomId/memories", async (req, res) => {
+    //     const { agentId, roomId } = validateUUIDParams(req.params, res) ?? {
+    //         agentId: null,
+    //         roomId: null,
+    //     };
+    //     if (!agentId || !roomId) return;
 
-        let runtime = agents.get(agentId);
+    //     let runtime = agents.get(agentId);
 
-        // if runtime is null, look for runtime with the same name
-        if (!runtime) {
-            runtime = Array.from(agents.values()).find(
-                (a) => a.character.name.toLowerCase() === agentId.toLowerCase()
-            );
-        }
+    //     // if runtime is null, look for runtime with the same name
+    //     if (!runtime) {
+    //         runtime = Array.from(agents.values()).find(
+    //             (a) => a.character.name.toLowerCase() === agentId.toLowerCase()
+    //         );
+    //     }
 
-        if (!runtime) {
-            res.status(404).send("Agent not found");
-            return;
-        }
+    //     if (!runtime) {
+    //         res.status(404).send("Agent not found");
+    //         return;
+    //     }
 
-        try {
-            const memories = await runtime.messageManager.getMemories({
-                roomId,
-            });
-            const response = {
-                agentId,
-                roomId,
-                memories: memories.map((memory) => ({
-                    id: memory.id,
-                    userId: memory.userId,
-                    agentId: memory.agentId,
-                    createdAt: memory.createdAt,
-                    content: {
-                        text: memory.content.text,
-                        action: memory.content.action,
-                        source: memory.content.source,
-                        url: memory.content.url,
-                        inReplyTo: memory.content.inReplyTo,
-                        attachments: memory.content.attachments?.map(
-                            (attachment) => ({
-                                id: attachment.id,
-                                url: attachment.url,
-                                title: attachment.title,
-                                source: attachment.source,
-                                description: attachment.description,
-                                text: attachment.text,
-                                contentType: attachment.contentType,
-                            })
-                        ),
-                    },
-                    embedding: memory.embedding,
-                    roomId: memory.roomId,
-                    unique: memory.unique,
-                    similarity: memory.similarity,
-                })),
-            };
+    //     try {
+    //         const memories = await runtime.messageManager.getMemories({
+    //             roomId,
+    //         });
+    //         const response = {
+    //             agentId,
+    //             roomId,
+    //             memories: memories.map((memory) => ({
+    //                 id: memory.id,
+    //                 userId: memory.userId,
+    //                 agentId: memory.agentId,
+    //                 createdAt: memory.createdAt,
+    //                 content: {
+    //                     text: memory.content.text,
+    //                     action: memory.content.action,
+    //                     source: memory.content.source,
+    //                     url: memory.content.url,
+    //                     inReplyTo: memory.content.inReplyTo,
+    //                     attachments: memory.content.attachments?.map(
+    //                         (attachment) => ({
+    //                             id: attachment.id,
+    //                             url: attachment.url,
+    //                             title: attachment.title,
+    //                             source: attachment.source,
+    //                             description: attachment.description,
+    //                             text: attachment.text,
+    //                             contentType: attachment.contentType,
+    //                         })
+    //                     ),
+    //                 },
+    //                 embedding: memory.embedding,
+    //                 roomId: memory.roomId,
+    //                 unique: memory.unique,
+    //                 similarity: memory.similarity,
+    //             })),
+    //         };
 
-            res.json(response);
-        } catch (error) {
-            console.error("Error fetching memories:", error);
-            res.status(500).json({ error: "Failed to fetch memories" });
-        }
-    });
+    //         res.json(response);
+    //     } catch (error) {
+    //         console.error("Error fetching memories:", error);
+    //         res.status(500).json({ error: "Failed to fetch memories" });
+    //     }
+    // });
 
     // router.get("/tee/agents", async (req, res) => {
     //     try {
@@ -444,22 +452,22 @@ export function createApiRouter(
         }
     });
 
-    router.post("/agents/:agentId/stop", async (req, res) => {
-        const agentId = req.params.agentId;
-        console.log("agentId", agentId);
-        const agent: AgentRuntime = agents.get(agentId);
+    // router.post("/agents/:agentId/stop", async (req, res) => {
+    //     const agentId = req.params.agentId;
+    //     console.log("agentId", agentId);
+    //     const agent: AgentRuntime = agents.get(agentId);
 
-        // update character
-        if (agent) {
-            // stop agent
-            agent.stop();
-            directClient.unregisterAgent(agent);
-            // if it has a different name, the agentId will change
-            res.json({ success: true });
-        } else {
-            res.status(404).json({ error: "Agent not found" });
-        }
-    });
+    //     // update character
+    //     if (agent) {
+    //         // stop agent
+    //         agent.stop();
+    //         directClient.unregisterAgent(agent);
+    //         // if it has a different name, the agentId will change
+    //         res.json({ success: true });
+    //     } else {
+    //         res.status(404).json({ error: "Agent not found" });
+    //     }
+    // });
 
     return router;
 }
