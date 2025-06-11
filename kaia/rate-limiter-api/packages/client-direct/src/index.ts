@@ -237,7 +237,8 @@ export class DirectClient {
                     "direct"
                 );
 
-                const text = req.body.text;
+                const text = req.body.text + ". Check this query for Kaia Blockchain context.";
+
                 // if empty text, directly return
                 if (!text) {
                     res.json([]);
