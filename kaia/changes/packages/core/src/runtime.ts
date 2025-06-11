@@ -797,7 +797,7 @@ export class AgentRuntime implements IAgentRuntime {
                         await this.ragKnowledgeManager.getKnowledge({
                             id: knowledgeId,
                             agentId: this.agentId,
-                            limit: 100
+                            // limit: 100 
                         });
 
                     if (existingKnowledge.length > 0) {
