@@ -1,0 +1,24 @@
+<!-- Custom Code -->
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+
+<script crossorigin src="https://unpkg.com/@kaiachain/kaia-chat-ui@latest/dist/kaia-chat-ui.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@kaiachain/kaia-chat-ui@latest/dist/kaia-chat-ui.css">
+
+<div id="chatbot-container"></div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const root = ReactDOM.createRoot(document.getElementById('chatbot-container'));
+  root.render(
+    React.createElement(window['kaia-chat-ui'].ChatbotWidget, {
+      apiBaseUrl: "http://localhost:3000",
+      agentId: "b6421c86-686c-0d17-ae68-2f87db1e3a27",
+      botName: "Kaia AI Agent"
+    })
+  );
+});
+
+</script>
+ 

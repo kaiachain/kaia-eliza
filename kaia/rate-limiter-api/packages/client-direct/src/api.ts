@@ -88,14 +88,14 @@ export function createApiRouter(
         });
     });
 
-    // router.get("/agents", (req, res) => {
-    //     const agentsList = Array.from(agents.values()).map((agent) => ({
-    //         id: agent.agentId,
-    //         name: agent.character.name,
-    //         clients: Object.keys(agent.clients),
-    //     }));
-    //     res.json({ agents: agentsList });
-    // });
+    router.get("/agents", (req, res) => {
+        const agentsList = Array.from(agents.values()).map((agent) => ({
+            id: agent.agentId,
+            name: agent.character.name,
+            clients: Object.keys(agent.clients),
+        }));
+        res.json({ agents: agentsList });
+    });
 
     // router.get('/storage', async (req, res) => {
     //     try {
