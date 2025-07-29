@@ -2,7 +2,7 @@
     "name": "Emily",
     "plugins": ["@elizaos-plugins/adapter-postgres"],
     "clients": [],
-    "modelProvider": "grok",
+    "modelProvider": "google",
     "settings": {
       "ragKnowledge": true,
       "secrets": {
