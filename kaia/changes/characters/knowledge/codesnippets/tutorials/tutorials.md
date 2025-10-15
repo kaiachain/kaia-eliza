@@ -1,4 +1,4 @@
-# [Tutorials](https://docs.kaia.io/build/tutorials)
+# Tutorials
 
 This chapter contains practical dApp examples with complete source code and explanations.
 

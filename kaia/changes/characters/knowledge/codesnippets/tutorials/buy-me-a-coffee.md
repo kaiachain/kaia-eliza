@@ -1,4 +1,4 @@
-# [Build a Buy-Me-A-Coffee DApp](https://docs.kaia.io/build/tutorials/buy-me-a-coffee)
+# Build a Buy-Me-A-Coffee DApp
 
 ## Table of Contents <a href="#table-of-contents" id="table-of-contents"></a>
 
@@ -436,7 +436,7 @@ Once the contract deploys successfully, your terminal should look like this:
 ```bash
 BuyMeACoffee Contract Address 0x0bEd1ed7B205d8c18e38A20b5BaB6e265A96d1AC
 ```
-Congratulations on deploying your BMC smart contract on Kaia Kairos Network! You can verify this transaction on Kaiascope  by pasting your address in the search field.
+Congratulations on deploying your BMC smart contract on Kaia Kairos Network! You can verify this transaction on [KaiaScan](https://www.kaiascan.io/) by pasting your address in the search field.
 
 ### 4.2 Interacting with BMC Smart Contract  <a id="interacting-with-bmc-contract"></a>
 
@@ -783,9 +783,6 @@ Now if the app isn't already running, you can go to the shell and use `npm run d
 Connect Wallet Page:
 
 ![](/img/build/tutorials/bmc-cw.png)
-
-![](/img/build/tutorials/bmc-connect.png)
-
 
 Frontend website to send coffee:
 
